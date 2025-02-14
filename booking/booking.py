@@ -51,32 +51,34 @@ class Booking(webdriver.Chrome):
         check_out_element = self.find_element(By.CSS_SELECTOR, f'span[data-date="{check_out_date}"]')
         check_out_element.click()
 
-    def select_adults(self, count=1):
-        selection_element = self.find_element_by_id('xp__guests__toggle')
-        selection_element.click()
 
-        while True:
-            decrease_adults_element = self.find_element_by_css_selector(
-                'button[aria-label="Decrease number of Adults"]'
-            )
-            decrease_adults_element.click()
-            #If the value of adults reaches 1, then we should get out
-            #of the while loop
-            adults_value_element = self.find_element_by_id('group_adults')
-            adults_value = adults_value_element.get_attribute(
-                'value'
-            ) # Should give back the adults count
 
-            if int(adults_value) == 1:
-                break
+    def select_adults(self, adults=1): 
+        selection_button = self.find_element(By.CSS_SELECTOR, 'button[data-testid="occupancy-config"]')
+        selection_button.click()
+        time.sleep(1)  # Allow dropdown to open
 
-        increase_button_element = self.find_element(By.CSS_SELECTOR,
-            'button[aria-label="Increase number of Adults"]'
-        )
-        
+        adults_value_element = self.find_element(By.CSS_SELECTOR, 'span.d723d73d5f')
+        current_adults = int(adults_value_element.text)
 
-        for _ in range(count - 1):
-            increase_button_element.click()
+        increase_button = self.find_element(By.CSS_SELECTOR, 'button.bb803d8689.f4d78af12a')  # Increase button
+        decrease_button = self.find_element(By.CSS_SELECTOR, 'button.bb803d8689.e91c91fa93')  # Decrease button
+
+        # Reduce adults to 1 before increasing
+        while current_adults > 1:
+            decrease_button.click()
+            time.sleep(0.5)
+            current_adults -= 1
+
+        # Increase adults to the desired number
+        while current_adults < adults:
+            increase_button.click()
+            time.sleep(1)
+            current_adults += 1
+
+        # Close the dropdown by clicking the selection button again
+        selection_button.click()
+
 
     def click_search(self):
         search_button = self.find_element(By.CSS_SELECTOR,
