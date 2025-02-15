@@ -4,6 +4,7 @@ import time
 from selenium import webdriver
 from booking.booking_filtration import BookingFiltration
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 
 class Booking(webdriver.Chrome):
     def __init__(self, driver_path=r"C:\SeleniumDrivers",
@@ -25,6 +26,7 @@ class Booking(webdriver.Chrome):
         self.get(const.BASE_URL)
 
     def change_currency(self, currency=None):
+        time.sleep(2)
         currency_element = self.find_element(By.CSS_SELECTOR, 'button[data-testid="header-currency-picker-trigger"]')
         currency_element.click()
 
@@ -33,11 +35,13 @@ class Booking(webdriver.Chrome):
 
 
     def select_place_to_go(self, place_to_go):
+        time.sleep(2)
         search_field = self.find_element(By.NAME, "ss")
         search_field.clear()
         search_field.send_keys(place_to_go)
-
+        time.sleep(4)
         first_result = self.find_element(By.ID, 'autocomplete-result-1')
+        time.sleep(2)
         first_result.click()
         
 
@@ -85,9 +89,21 @@ class Booking(webdriver.Chrome):
             'button[type="submit"]'
         )
         search_button.click()
+        
+        
+    def close_modal_if_present(self):
+        try:
+            close_button = self.find_element(By.CSS_SELECTOR, 'button.f4552b6561')
+            close_button.click()
+            time.sleep(2)  # Wait briefly to ensure the modal closes
+            print("Modal closed successfully.")
+        except NoSuchElementException:
+            print("Modal not found, continuing...")
 
     def apply_filtrations(self):
         filtration = BookingFiltration(driver=self)
         filtration.apply_star_rating(4, 5)
 
         filtration.sort_price_lowest_first()
+        
+        
