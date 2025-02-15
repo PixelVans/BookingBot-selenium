@@ -1,6 +1,7 @@
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 
+
 class BookingReport:
     def __init__(self, boxes_section_element: WebElement):
         self.boxes_section_element = boxes_section_element

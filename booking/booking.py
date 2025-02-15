@@ -5,6 +5,8 @@ from selenium import webdriver
 from booking.booking_filtration import BookingFiltration
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from prettytable import PrettyTable
+
 
 class Booking(webdriver.Chrome):
     def __init__(self, driver_path=r"C:\SeleniumDrivers",
@@ -107,7 +109,7 @@ class Booking(webdriver.Chrome):
         filtration.sort_price_lowest_first()
         
     def report_results(self):
-        hotel_boxes = self.find_element_by_id(
+        hotel_boxes = self.find_element(BY.ID,
             'hotellist_inner'
         )
 
