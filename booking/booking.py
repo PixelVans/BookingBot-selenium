@@ -106,4 +106,16 @@ class Booking(webdriver.Chrome):
 
         filtration.sort_price_lowest_first()
         
+    def report_results(self):
+        hotel_boxes = self.find_element_by_id(
+            'hotellist_inner'
+        )
+
+        report = BookingReport(hotel_boxes)
+        table = PrettyTable(
+            field_names=["Hotel Name", "Hotel Price", "Hotel Score"]
+        )
+        table.add_rows(report.pull_deal_box_attributes())
+        print(table)
+        
         
